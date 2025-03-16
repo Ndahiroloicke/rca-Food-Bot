@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { SLACK_CONFIG } from '../config/slack';
 
-export const sendSlackNotification = async (mealType: string, time: string) => {
+export const sendSlackNotification = async (mealType: string) => {
   try {
-    const message = `🍽️ *${mealType}* is ready! Students can come to the refectory at *${time}*`;
+    const message = `Time for *${mealType}*.`;
     
     await axios.post(SLACK_CONFIG.WEBHOOK_URL, {
       text: message,

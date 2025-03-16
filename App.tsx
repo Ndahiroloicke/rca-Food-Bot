@@ -3,19 +3,16 @@ import { StyleSheet, View, Alert, TouchableOpacity, SafeAreaView, StatusBar, Pla
 import { Text, Card, Button, Icon, LinearProgress } from '@rneui/themed';
 import { sendSlackNotification } from './src/services/slackService';
 import { MealType } from './src/types';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 // Icons for each meal type
 const MEAL_ICONS = {
   Breakfast: 'coffee',
   Lunch: 'restaurant',
-  Dinner: 'local-dining',
+  Supper: 'local-dining',
 };
 
 export default function App() {
   const [selectedMeal, setSelectedMeal] = useState<MealType>('Breakfast');
-  const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
@@ -57,26 +54,14 @@ export default function App() {
     setSelectedMeal(meal);
   };
 
-  const handleTimeChange = (event: any, selectedDate?: Date) => {
-    setShowTimePicker(false);
-    if (selectedDate) {
-      setSelectedTime(selectedDate);
-    }
-  };
-
   const handleNotification = async () => {
     setIsLoading(true);
     
-    const timeString = selectedTime.toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-
     try {
-      const success = await sendSlackNotification(selectedMeal, timeString);
+      const success = await sendSlackNotification(selectedMeal);
       
       if (success) {
-        Alert.alert('Success', `Your ${selectedMeal.toLowerCase()} notification has been scheduled for ${timeString}!`);
+        Alert.alert('Success', `Notification sent for ${selectedMeal.toLowerCase()}!`);
       } else {
         Alert.alert('Error', 'Failed to send notification. Please try again.');
       }
@@ -124,7 +109,7 @@ export default function App() {
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Select Meal</Text>
         
         <View style={styles.mealButtonsContainer}>
-          {(['Breakfast', 'Lunch', 'Dinner'] as MealType[]).map((meal) => (
+          {(['Breakfast', 'Lunch', 'Supper'] as MealType[]).map((meal) => (
             <TouchableOpacity
               key={meal}
               style={[
@@ -153,34 +138,8 @@ export default function App() {
           ))}
         </View>
 
-        <Text style={[styles.sectionTitle, { color: colors.text, marginTop: 24 }]}>Select Time</Text>
-        
-        <TouchableOpacity
-          style={[styles.timeSelector, { borderColor: colors.border }]}
-          onPress={() => setShowTimePicker(true)}
-        >
-          <Icon
-            name="access-time"
-            type="material"
-            color={colors.primary}
-            size={24}
-          />
-          <Text style={[styles.timeText, { color: colors.text }]}>
-            {selectedTime.toLocaleTimeString([], { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </Text>
-          <Icon
-            name="chevron-down"
-            type="feather"
-            color={colors.subtext}
-            size={20}
-          />
-        </TouchableOpacity>
-
         <Button
-          title="Schedule Notification"
+          title="Send Notification"
           icon={{
             name: "send",
             type: "feather",
@@ -205,17 +164,6 @@ export default function App() {
           />
         )}
       </Card>
-
-      {showTimePicker && (
-        <DateTimePicker
-          value={selectedTime}
-          mode="time"
-          is24Hour={false}
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={handleTimeChange}
-          themeVariant={theme}
-        />
-      )}
     </SafeAreaView>
   );
 }
@@ -304,18 +252,6 @@ const styles = StyleSheet.create({
   },
   mealButtonText: {
     fontSize: 14,
-    fontWeight: '500',
-  },
-  timeSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 15,
-    borderWidth: 1,
-    borderRadius: 12,
-  },
-  timeText: {
-    fontSize: 18,
     fontWeight: '500',
   },
   sendButton: {

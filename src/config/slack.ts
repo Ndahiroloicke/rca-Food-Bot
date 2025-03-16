@@ -1,4 +1,4 @@
 export const SLACK_CONFIG = {
-  WEBHOOK_URL: 'https://hooks.slack.com/services/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', // You'll need to create this in Slack
-  CHANNEL: '#general', // Your channel name
+  WEBHOOK_URL: 'https://hooks.slack.com/services/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', // You'll need to create this in Slack
+  CHANNEL: '#discipline_staff-and-students', // Your channel name
 }; 

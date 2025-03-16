@@ -1,34 +1,26 @@
 {
   "expo": {
-    "name": "food-notification-bot",
-    "slug": "food-notification-bot",
+    "name": "Food Notification",
+    "slug": "foodbot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.loicke.foodnotificationbot"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "package": "com.yourschool.foodnotification"
     },
     "extra": {
       "eas": {
-        "projectId": "600a58e2-5f1d-439c-8991-92e4a2484e91"
+        "projectId": "a4c1d360-2d82-4768-8f0a-a053c2187966"
       }
-    }
+    },
+    "owner": "loic6"
   }
 }

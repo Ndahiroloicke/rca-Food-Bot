@@ -1,4 +1,4 @@
-export type MealType = 'Breakfast' | 'Lunch' | 'Dinner';
+export type MealType = 'Breakfast' | 'Lunch' | 'Supper';
 
 export interface MealTime {
   hour: number;
