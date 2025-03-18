@@ -58,13 +58,50 @@ export default function App() {
     setIsLoading(true);
     
     try {
-      const success = await sendSlackNotification(selectedMeal);
-      
-      if (success) {
-        Alert.alert('Success', `Notification sent for ${selectedMeal.toLowerCase()}!`);
-      } else {
-        Alert.alert('Error', 'Failed to send notification. Please try again.');
+      // Try up to 2 times if the first attempt fails
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const success = await sendSlackNotification(selectedMeal);
+        
+        if (success) {
+          Alert.alert('Success', `Notification sent for ${selectedMeal.toLowerCase()}!`);
+          return;
+        }
+        
+        // Small delay before retry
+        if (attempt === 0) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
       }
+      
+      Alert.alert('Error', 'Failed to send notification. Please check your internet connection and try again.');
+    } catch (error) {
+      Alert.alert('Error', 'An unexpected error occurred.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleStillCookingNotification = async () => {
+    setIsLoading(true);
+    
+    try {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const success = await sendSlackNotification(
+          "Hey y'all, Ferdinand is still cooking 🤷‍♂️, But the food will be ready soon.",
+          'status'  // specify this is a status message, not a meal
+        );
+        
+        if (success) {
+          Alert.alert('Success', 'Cooking status notification sent!');
+          return;
+        }
+        
+        if (attempt === 0) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      }
+      
+      Alert.alert('Error', 'Failed to send notification. Please check your internet connection and try again.');
     } catch (error) {
       Alert.alert('Error', 'An unexpected error occurred.');
     } finally {
@@ -138,23 +175,43 @@ export default function App() {
           ))}
         </View>
 
-        <Button
-          title="Send Notification"
-          icon={{
-            name: "send",
-            type: "feather",
-            size: 20,
-            color: "white"
-          }}
-          iconRight
-          iconContainerStyle={{ marginLeft: 10 }}
-          buttonStyle={[styles.sendButton, { backgroundColor: colors.primary }]}
-          titleStyle={styles.sendButtonText}
-          onPress={handleNotification}
-          disabled={isLoading}
-          disabledStyle={{ backgroundColor: colors.primary, opacity: 0.7 }}
-          containerStyle={{ marginTop: 30 }}
-        />
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Send Notification"
+            icon={{
+              name: "send",
+              type: "feather",
+              size: 20,
+              color: "white"
+            }}
+            iconRight
+            iconContainerStyle={{ marginLeft: 10 }}
+            buttonStyle={[styles.sendButton, { backgroundColor: colors.primary }]}
+            titleStyle={styles.sendButtonText}
+            onPress={handleNotification}
+            disabled={isLoading}
+            disabledStyle={{ backgroundColor: colors.primary, opacity: 0.7 }}
+            containerStyle={{ marginTop: 20 }}
+          />
+          
+          <Button
+            title="Still Cooking"
+            icon={{
+              name: "clock",
+              type: "feather",
+              size: 20,
+              color: "white"
+            }}
+            iconRight
+            iconContainerStyle={{ marginLeft: 10 }}
+            buttonStyle={[styles.sendButton, { backgroundColor: colors.secondary }]}
+            titleStyle={styles.sendButtonText}
+            onPress={handleStillCookingNotification}
+            disabled={isLoading}
+            disabledStyle={{ backgroundColor: colors.secondary, opacity: 0.7 }}
+            containerStyle={{ marginTop: 10 }}
+          />
+        </View>
 
         {isLoading && (
           <LinearProgress 
@@ -253,6 +310,9 @@ const styles = StyleSheet.create({
   mealButtonText: {
     fontSize: 14,
     fontWeight: '500',
+  },
+  buttonContainer: {
+    marginTop: 10,
   },
   sendButton: {
     borderRadius: 12,

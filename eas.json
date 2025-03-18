@@ -2,14 +2,24 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "env": {
+          "SLACK_WEBHOOK_URL": "$(SLACK_WEBHOOK_URL)"
+        }
       }
     },
     "preview2": {
       "android": {
-        "gradleCommand": ":app:assembleRelease"
+        "gradleCommand": ":app:assembleRelease",
+        "env": {
+          "SLACK_WEBHOOK_URL": "$(SLACK_WEBHOOK_URL)"
+        }
       }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "SLACK_WEBHOOK_URL": "$(SLACK_WEBHOOK_URL)"
+      }
+    }
   }
 }
